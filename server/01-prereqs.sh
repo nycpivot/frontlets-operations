@@ -25,6 +25,12 @@ sudo apt-get install -y dotnet-sdk-8.0
 
 # sudo apt install aspnetcore-runtime-8.0
 
+
+# install tool to mount to s3 (need debian version)
+#wget https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.rpm
+
+
+# install unified cloudwatch agent
 sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb
 sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
 sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
