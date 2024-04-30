@@ -1,7 +1,7 @@
 #!/bin/bash
 
 read -p "Stack Name (frontlets-media-server-stack): " stack_name
-read -p "Server Name (heirwaves-media-server): " server_name
+read -p "Server Name (frontlets-media-server): " server_name
 read -p "AWS Region Code (us-east-1): " aws_region_code
 
 if [[ -z $stack_name ]]
