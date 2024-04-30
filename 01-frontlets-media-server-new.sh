@@ -81,15 +81,15 @@ instance_id=$(aws cloudformation describe-stacks \
 aws iam create-instance-profile --instance-profile-name $profile_name
 
 # create role and attach policy to allow it access to services
-aws iam create-role --role-name $role_name --assume-role-policy-document file://config/trust-policy.json
-aws iam attach-role-policy --role-name $role_name --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
-aws iam attach-role-policy --role-name $role_name --policy-arn arn:aws:iam::aws:policy/SecretsManagerReadWrite
-aws iam attach-role-policy --role-name $role_name --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+aws iam create-role --role-name $role_name --assume-role-policy-document file://config/trust-policy.json --no-cli-pager
+aws iam attach-role-policy --role-name $role_name --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess --no-cli-pager
+aws iam attach-role-policy --role-name $role_name --policy-arn arn:aws:iam::aws:policy/SecretsManagerReadWrite --no-cli-pager
+aws iam attach-role-policy --role-name $role_name --policy-arn arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy --no-cli-pager
 
-aws iam add-role-to-instance-profile --instance-profile-name $profile_name --role-name $role_name
+aws iam add-role-to-instance-profile --instance-profile-name $profile_name --role-name $role_name --no-cli-pager
 
 sleep 10 # the following line works if run manually after the above has run
-aws ec2 associate-iam-instance-profile --iam-instance-profile Name=$profile_name --instance-id $instance_id
+aws ec2 associate-iam-instance-profile --iam-instance-profile Name=$profile_name --instance-id $instance_id --no-cli-pager
 
 # wget http://169.254.169.254/latest/dynamic/instance-identity/document -O metadata
 # aws_region_code=$(cat metadata | jq -r .region)
