@@ -1,0 +1,53 @@
+Description: "Creates a Linux operator machine."
+Mappings:
+  Images:
+    us-east-1:
+      Id: "ami-080e1f13689e07408"
+    us-east-2:
+      Id: "ami-0b8b44ec9a8f90422"
+    us-west-1:
+      Id: "ami-05c969369880fa2c2"
+    us-west-2:
+      Id: "ami-08116b9957a259459"
+Parameters:
+  VpcId:
+    Type: String
+  MediaServerName:
+    Type: String
+    Default: frontlets-media-server
+    AllowedValues:
+      - frontlets-media-server
+Resources:
+  MediaServerKeyPair:
+    Type: 'AWS::EC2::KeyPair'
+    Properties:
+      KeyName: frontlets-media-server-keypair
+  MediaServerInstance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: !FindInMap
+        - Images
+        - !Ref AWS::Region
+        - Id
+      InstanceType: "t3.medium"
+      KeyName: !Ref MediaServerKeyPair
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 10
+            DeleteOnTermination: true
+      SecurityGroupIds:
+        - "ssh-enabled"
+        - "http-enabled"
+        - "https-enabled"
+        - "rtmp-enabled"
+      Tags:
+        - Key: "Name"
+          Value: !Ref MediaServerName
+Outputs:
+  InstanceId:
+    Value: !Ref MediaServerInstance
+  PublicIpAddress:
+    Value: !GetAtt MediaServerInstance.PublicIp
+  PublicDnsName:
+    Value: !GetAtt MediaServerInstance.PublicDnsName
