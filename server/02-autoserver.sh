@@ -17,7 +17,7 @@ apt install libpcre3-dev libssl-dev build-essential zlib1g-dev -y
 cd /root/
 
 # Download nginx from source 
-wget https://heirwaves-storage.s3.us-east-2.amazonaws.com/nginx.zip # https://up.ecarinfo.net/.nginx.zip
+wget https://frontlets-storage.s3.us-east-1.amazonaws.com/nginx.zip # https://up.ecarinfo.net/.nginx.zip
 
 cd /root/
 
