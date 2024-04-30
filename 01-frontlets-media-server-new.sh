@@ -96,8 +96,8 @@ aws ec2 associate-iam-instance-profile --iam-instance-profile Name=$profile_name
 
 aws configure set default.region $aws_region_code
 
-# dns for media.heirwaves.net
-hosted_zone_id=Z099430332IQVI0X2YHRW
+# dns for media.frontlets.net
+hosted_zone_id=Z0751888SKYR8JH75BJ6
 
 ipaddress=$(aws cloudformation describe-stacks \
 	--stack-name ${stack_name} \
