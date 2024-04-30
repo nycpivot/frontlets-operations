@@ -2,10 +2,10 @@
 
 AWS_REGION_CODE=$(aws configure get region)
 
-stack_name=media-server-stack
+stack_name=frontlets-media-server-stack
 
-profile_name=heirwaves-media-server-profile-$AWS_REGION_CODE
-role_name=heirwaves-media-server-role-$AWS_REGION_CODE
+profile_name=frontlets-media-server-profile-$AWS_REGION_CODE
+role_name=frontlets-media-server-role-$AWS_REGION_CODE
 
 echo
 echo "Deleting stack..."
