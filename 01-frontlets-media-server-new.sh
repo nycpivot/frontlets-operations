@@ -72,7 +72,7 @@ aws ssm get-parameter \
 
 echo
 
-elastic_ip=$(aws ec2 describe-addresses --query Addresses[0].PublicIp --output text)
+# elastic_ip=$(aws ec2 describe-addresses --query Addresses[0].PublicIp --output text)
 instance_id=$(aws cloudformation describe-stacks \
 	--stack-name ${stack_name} \
 	--region ${aws_region_code} \
@@ -102,10 +102,10 @@ aws configure set default.region $aws_region_code
 # dns for media.frontlets.net
 hosted_zone_id=Z0751888SKYR8JH75BJ6
 
-# ipaddress=$(aws cloudformation describe-stacks \
-# 	--stack-name ${stack_name} \
-# 	--region ${aws_region_code} \
-# 	--query "Stacks[0].Outputs[?OutputKey=='PublicIpAddress'].OutputValue" --output text)
+ipaddress=$(aws cloudformation describe-stacks \
+	--stack-name ${stack_name} \
+	--region ${aws_region_code} \
+	--query "Stacks[0].Outputs[?OutputKey=='PublicIpAddress'].OutputValue" --output text)
 
 mkdir $HOME/tmp
 
@@ -122,7 +122,7 @@ cat <<EOF | tee $HOME/tmp/$change_batch_filename.json
                 "TTL": 60,
                 "ResourceRecords": [
                     {
-                        "Value": "${elastic_ip}"
+                        "Value": "${ipaddress}"
                     }
                 ]
             }
