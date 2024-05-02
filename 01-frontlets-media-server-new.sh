@@ -21,7 +21,6 @@ fi
 
 dns=media.frontlets.net
 
-elastic_ip=$(aws ec2 describe-addresses --query Addresses[0].PublicIp --output text)
 profile_name=frontlets-media-server-profile-$aws_region_code
 role_name=frontlets-media-server-role-$aws_region_code
 
@@ -73,6 +72,7 @@ aws ssm get-parameter \
 
 echo
 
+elastic_ip=$(aws ec2 describe-addresses --query Addresses[0].PublicIp --output text)
 instance_id=$(aws cloudformation describe-stacks \
 	--stack-name ${stack_name} \
 	--region ${aws_region_code} \
