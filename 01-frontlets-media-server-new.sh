@@ -48,26 +48,12 @@ echo
 
 aws cloudformation wait stack-create-complete --stack-name ${stack_name} --region ${aws_region_code}
 
-cf_outputs=$(aws cloudformation describe-stacks \
-	--stack-name $stack_name \
-	--query 'Stacks[0].Outputs[].join(`=`, [OutputValue])')
+cf_outputs=$(aws cloudformation describe-stacks --stack-name $stack_name --query 'Stacks[0].Outputs[].OutputValue')
 
 ip_address=$(echo "${cf_outputs}" | jq -r .[0])
 instance_id=$(echo "${cf_outputs}" | jq -r .[1])
-public_dns=$(echo "${cf_outputs}" | jq -r .[2])
-
-
-
-
-
-
-
-
-key_id=$(aws ec2 describe-key-pairs \
-	--region ${aws_region_code} \
-	--filters Name=key-name,Values=frontlets-media-server-keypair \
-	--query KeyPairs[*].KeyPairId \
-	--output text)
+key_id=$(echo "${cf_outputs}" | jq -r .[2])
+public_dns=$(echo "${cf_outputs}" | jq -r .[3])
 
 if [ ! -d "keys" ]
 then
@@ -86,14 +72,6 @@ aws ssm get-parameter \
 	--output text > keys/frontlets-media-server-keypair-${aws_region_code}.pem
 
 echo
-
-# elastic_ip=$(aws ec2 describe-addresses --query Addresses[0].PublicIp --output text)
-instance_id=$(aws cloudformation describe-stacks \
-	--stack-name ${stack_name} \
-	--region ${aws_region_code} \
-  --query "Stacks[0].Outputs[?OutputKey=='InstanceId'].OutputValue" --output text)
-
-# aws ec2 associate-address --region $aws_region_code --instance-id $instance_id --public-ip $elastic_ip
 
 # create instance profile for EC2 instance
 aws iam create-instance-profile --instance-profile-name $profile_name
@@ -114,14 +92,6 @@ aws ec2 associate-iam-instance-profile --iam-instance-profile Name=$profile_name
 
 aws configure set default.region $aws_region_code
 
-# dns for media.frontlets.net
-hosted_zone_id=Z0751888SKYR8JH75BJ6
-
-ipaddress=$(aws cloudformation describe-stacks \
-	--stack-name ${stack_name} \
-	--region ${aws_region_code} \
-	--query "Stacks[0].Outputs[?OutputKey=='PublicIpAddress'].OutputValue" --output text)
-
 mkdir $HOME/tmp
 
 change_batch_filename=change-batch-$RANDOM
@@ -137,7 +107,7 @@ cat <<EOF | tee $HOME/tmp/$change_batch_filename.json
                 "TTL": 60,
                 "ResourceRecords": [
                     {
-                        "Value": "${ipaddress}"
+                        "Value": "${ip_address}"
                     }
                 ]
             }
@@ -146,6 +116,9 @@ cat <<EOF | tee $HOME/tmp/$change_batch_filename.json
 }
 EOF
 echo
+
+# dns for media.frontlets.net
+hosted_zone_id=Z0751888SKYR8JH75BJ6
 
 aws route53 change-resource-record-sets \
   --hosted-zone-id $hosted_zone_id \
@@ -156,11 +129,6 @@ echo
 
 echo
 echo "*** SERVER DNS ***"
-
-aws cloudformation describe-stacks \
-	--stack-name ${stack_name} \
-	--region ${aws_region_code} \
-	--query "Stacks[0].Outputs[?OutputKey=='PublicDnsName'].OutputValue" --output text
-
+echo $public_dns
 echo "******************"
 echo
