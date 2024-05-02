@@ -78,10 +78,7 @@ instance_id=$(aws cloudformation describe-stacks \
 	--region ${aws_region_code} \
   --query "Stacks[0].Outputs[?OutputKey=='InstanceId'].OutputValue" --output text)
 
-aws opsworks associate-elastic-ip \
-	--region $aws_region_code \
-	--instance-id $instance_id \
-	--elastic-ip $elastic_ip
+aws ec2 associate-address --region $aws_region_code --instance-id $instance_id --public-ip $elastic_ip
 
 # create instance profile for EC2 instance
 aws iam create-instance-profile --instance-profile-name $profile_name
