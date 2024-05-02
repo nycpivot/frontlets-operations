@@ -21,14 +21,15 @@ fi
 
 dns=media.frontlets.net
 
+elastic_ip=$(aws ec2 describe-addresses --query Addresses[0].PublicIp --output text)
 profile_name=frontlets-media-server-profile-$aws_region_code
 role_name=frontlets-media-server-role-$aws_region_code
 
 vpc_id=$(aws ec2 describe-vpcs \
-			--region ${aws_region_code} \
-			--filter "Name=isDefault,Values=true" \
-			--query "Vpcs[].VpcId" \
-			--output text)
+	--region ${aws_region_code} \
+	--filter "Name=isDefault,Values=true" \
+	--query "Vpcs[].VpcId" \
+	--output text)
 
 if [[ -z $vpc_id ]]
 then
@@ -49,10 +50,10 @@ echo
 aws cloudformation wait stack-create-complete --stack-name ${stack_name} --region ${aws_region_code}
 
 key_id=$(aws ec2 describe-key-pairs \
-			--region ${aws_region_code} \
-			--filters Name=key-name,Values=frontlets-media-server-keypair \
-			--query KeyPairs[*].KeyPairId \
-			--output text)
+	--region ${aws_region_code} \
+	--filters Name=key-name,Values=frontlets-media-server-keypair \
+	--query KeyPairs[*].KeyPairId \
+	--output text)
 
 if [ ! -d "keys" ]
 then
@@ -75,7 +76,12 @@ echo
 instance_id=$(aws cloudformation describe-stacks \
 	--stack-name ${stack_name} \
 	--region ${aws_region_code} \
-    --query "Stacks[0].Outputs[?OutputKey=='InstanceId'].OutputValue" --output text)
+  --query "Stacks[0].Outputs[?OutputKey=='InstanceId'].OutputValue" --output text)
+
+aws opsworks associate-elastic-ip \
+	--region $aws_region_code \
+	--instance-id $instance_id \
+	--elastic-ip $elastic_ip
 
 # create instance profile for EC2 instance
 aws iam create-instance-profile --instance-profile-name $profile_name
@@ -99,10 +105,10 @@ aws configure set default.region $aws_region_code
 # dns for media.frontlets.net
 hosted_zone_id=Z0751888SKYR8JH75BJ6
 
-ipaddress=$(aws cloudformation describe-stacks \
-	--stack-name ${stack_name} \
-	--region ${aws_region_code} \
-	--query "Stacks[0].Outputs[?OutputKey=='PublicIpAddress'].OutputValue" --output text)
+# ipaddress=$(aws cloudformation describe-stacks \
+# 	--stack-name ${stack_name} \
+# 	--region ${aws_region_code} \
+# 	--query "Stacks[0].Outputs[?OutputKey=='PublicIpAddress'].OutputValue" --output text)
 
 mkdir $HOME/tmp
 
@@ -119,7 +125,7 @@ cat <<EOF | tee $HOME/tmp/$change_batch_filename.json
                 "TTL": 60,
                 "ResourceRecords": [
                     {
-                        "Value": "${ipaddress}"
+                        "Value": "${elastic_ip}"
                     }
                 ]
             }

@@ -3,6 +3,8 @@
 sudo apt update
 # yes | sudo apt upgrade
 
+sudo apt-get install tree
+
 # the following works best on ubuntu 22.04
 sudo apt-get install -y dotnet-sdk-8.0
 
