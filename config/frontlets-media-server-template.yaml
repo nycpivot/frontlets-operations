@@ -44,6 +44,13 @@ Resources:
       Tags:
         - Key: "Name"
           Value: !Ref MediaServerName
+  Type: AWS::EC2::EIP
+  Properties:
+    Domain: VPC
+    InstanceId: !Ref MediaServerInstance
+    Tags: 
+      - Key: "Name"
+        Value: !Ref MediaServerName
 Outputs:
   InstanceId:
     Value: !Ref MediaServerInstance
