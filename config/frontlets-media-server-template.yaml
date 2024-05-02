@@ -59,3 +59,5 @@ Outputs:
     Value: !GetAtt MediaServerInstance.PublicIp
   PublicDnsName:
     Value: !GetAtt MediaServerInstance.PublicDnsName
+  KeyPairId:
+    Value: !GetAtt MediaServerKeyPair.KeyPairId

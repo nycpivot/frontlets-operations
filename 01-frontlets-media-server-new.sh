@@ -48,6 +48,21 @@ echo
 
 aws cloudformation wait stack-create-complete --stack-name ${stack_name} --region ${aws_region_code}
 
+cf_outputs=$(aws cloudformation describe-stacks \
+	--stack-name $stack_name \
+	--query 'Stacks[0].Outputs[].join(`=`, [OutputValue])')
+
+ip_address=$(echo "${cf_outputs}" | jq -r .[0])
+instance_id=$(echo "${cf_outputs}" | jq -r .[1])
+public_dns=$(echo "${cf_outputs}" | jq -r .[2])
+
+
+
+
+
+
+
+
 key_id=$(aws ec2 describe-key-pairs \
 	--region ${aws_region_code} \
 	--filters Name=key-name,Values=frontlets-media-server-keypair \
