@@ -29,7 +29,7 @@ Resources:
         - Images
         - !Ref AWS::Region
         - Id
-      InstanceType: "t3.medium"
+      InstanceType: "t4g.small"
       KeyName: !Ref MediaServerKeyPair
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
