@@ -37,8 +37,6 @@ Resources:
             VolumeSize: 35
             DeleteOnTermination: true
       SecurityGroupIds:
-        - "ssh-enabled"
-        - "http-enabled"
         - "https-enabled"
         - "rtmp-enabled"
       Tags:
