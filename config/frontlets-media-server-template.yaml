@@ -39,6 +39,7 @@ Resources:
       SecurityGroupIds:
         - "ssh-enabled"
         - "https-enabled"
+        - "http-enabled"
         - "rtmp-enabled"
       Tags:
         - Key: "Name"
